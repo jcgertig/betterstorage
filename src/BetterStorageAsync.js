@@ -242,6 +242,9 @@ export default class BetterStorageAsync {
    * List of all keys in store
    */
   get fullKeys() {
-    return this.store.getAllKeys();
+    if (this.store.hasOwnProperty('getAllKeys')) {
+      return this.store.getAllKeys();
+    }
+    return new Promise((accept) => accept(Object.keys(this.store)));
   }
 }
