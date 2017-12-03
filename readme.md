@@ -14,20 +14,29 @@ __A better storage wrapper__
 
 This library adds a nice api wrapper for many storage methods.
 
+This library now defaults to promise based returns for all methods. Synchronous methods are available via `import { BetterStroage } from 'betterstorage'`.
+
 ## Basic Usage
 
 ```javascript
 import BetterStorage from 'betterstorage';
 
 const BasicStore = new BetterStorage();
-BasicStore.set('Test', { test: 'test' });
-BasicStore.has('Test') // true
-BasicStore.get('Test'); // { test: 'test' }
+BasicStore.set('Test', { test: 'test' }).then(() =>{
+  BasicStore.has('Test').then((has) => {
+    if (has) {
+      BasicStore.get('Test').then((value) => {
+        console.log(value); // { test: 'test' }
+      });
+    }
+  });
+});
 ```
 
 ## You can prefix your items in the store
 
 ```javascript
+import { BetterStorage } from 'betterstorage';
 const AwesomeStore = new BetterStorage('Awesome');
 AwesomeStore.set('Test', { test: 'test' });
 AwesomeStore.has('Test') // true
@@ -41,9 +50,9 @@ By defualt the store uses local storage.
 To change this pass the name or the object as the second parameter.
 
 ```javascript
+import { BetterStorage } from 'betterstorage';
 const AwesomeLocalStore = new BetterStorage('Awesome', 'local');
 const AwesomeSessionStore = new BetterStorage('Awesome', 'session');
-const AwesomeNodeStore = new BetterStorage('Awesome', require('node-localstorage').LocalStorage);
 ```
 
 ## All methods
@@ -105,6 +114,8 @@ This returns the key at index out of all items in the store.
 ## Overrides
 You can pass in methods to override the default actions for betterstorage.
 This is most useful if you need a different storage type then the default 'local' and 'session'.
+When using the default async storage api then these methods must return promises.
+When using synchronous these methods should not return promises
 
 The methods that you can override are
  - `doSet`
@@ -127,14 +138,16 @@ const ReduxEffectsStore = new BetterStorage('Effects', 'local', {
   doGet: (key) => dispatch(getItem(key)),
   doSet: (key, value) => dispatch(setItem(key, value)),
   doRemove: (key) => dispatch(removeItem(key)),
-  doClear: () =>  dispatch(clear())
+  doClear: () =>  dispatch(clear()),
 });
-ReduxEffectsStore.set('Test', { test: 'test' });
-ReduxEffectsStore.has('Test'); // false
-setTimeout(() => {
-  ReduxEffectsStore.has('Test'); // true
-  ReduxEffectsStore.get('Test').then((data) => { console.log(data); }); // { test: 'test' }
-}, 100);
+
+ReduxEffectsStore.set('Test', { test: 'test' }).then(() => {
+  ReduxEffectsStore.has('Test').then(has => {
+    if (has) {
+      ReduxEffectsStore.get('Test').then((data) => { console.log(data); });
+    }
+  });
+});
 ```
 
 [npm-dm]: https://img.shields.io/npm/dm/betterstorage.svg

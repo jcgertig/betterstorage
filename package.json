@@ -1,6 +1,6 @@
 {
   "name": "betterstorage",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "A better storage wrapper",
   "main": "lib/index.js",
   "scripts": {
@@ -34,8 +34,7 @@
   },
   "homepage": "https://github.com/jcgertig/betterstorage#readme",
   "dependencies": {
-    "core-decorators": "^0.20.0",
-    "memoizerific": "^1.11.2"
+    "core-decorators": "^0.20.0"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
