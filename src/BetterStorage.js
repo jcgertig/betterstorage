@@ -26,7 +26,7 @@ export default class BetterStorage {
 
   _doGet(key) {
     try {
-      return JSON.parse().value;
+      return JSON.parse(this.store.getItem(key)).value;
     } catch (e) {
       return this.store.getItem(key);
     }

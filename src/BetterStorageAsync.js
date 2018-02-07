@@ -1,5 +1,12 @@
 import { autobind, decorate } from 'core-decorators';
 
+function asPromsieResolve (val) {
+  if (val instanceof Promise) {
+    return val;
+  }
+  return new Promise(accept => accept(val));
+}
+
 @autobind
 export default class BetterStorageAsync {
   constructor(prefix = '', kind = 'local', overrides = {}) {
@@ -21,12 +28,12 @@ export default class BetterStorageAsync {
   }
 
   _doSet(key, data) {
-    return this.store.setItem(key, JSON.stringify({ value: data }));
+    return asPromsieResolve(this.store.setItem(key, JSON.stringify({ value: data })));
   }
 
   _doGet(key) {
     return new Promise((accept, reject) => {
-      this.store.getItem(key).then((data) => {
+      asPromsieResolve(this.store.getItem(key)).then((data) => {
         try {
           accept(JSON.parse(data).value)
         } catch (e) {
@@ -37,11 +44,11 @@ export default class BetterStorageAsync {
   }
 
   _doRemove(key) {
-    return this.store.removeItem(key);
+    return asPromsieResolve(this.store.removeItem(key));
   }
 
   _doClear() {
-    return this.store.clear();
+    return asPromsieResolve(this.store.clear());
   }
 
   _doLength() {

@@ -1,6 +1,6 @@
 {
   "name": "betterstorage",
-  "version": "2.0.1",
+  "version": "2.0.4",
   "description": "A better storage wrapper",
   "main": "lib/index.js",
   "scripts": {
